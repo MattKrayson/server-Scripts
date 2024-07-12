@@ -60,4 +60,5 @@ history -c
 
 echo "System cleanup completed successfully."
 
+#Comment out the below or modify for your own notification service
 bash /root/automation/ntfy.sh "Server $HOSTNAME cleanup script ran" "default"
