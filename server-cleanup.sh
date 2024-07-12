@@ -60,4 +60,4 @@ history -c
 
 echo "System cleanup completed successfully."
 
-bash /ntfy.sh "Server $HOSTNAME cleanup script ran" "default"
+bash /root/automation/ntfy.sh "Server $HOSTNAME cleanup script ran" "default"
