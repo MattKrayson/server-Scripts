@@ -23,3 +23,4 @@ while true; do
     # Sleep for 0.5 seconds
     sleep 0.5
 done
+
