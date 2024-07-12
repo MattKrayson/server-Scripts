@@ -1,6 +1,6 @@
 
 #!/bin/bash
-
+HOSTNAME=$(hostname)
 
 # Ensure the script is run as root
 if [[ "$EUID" -ne 0 ]]; then
@@ -59,3 +59,5 @@ cat /dev/null > ~/.bash_history
 history -c
 
 echo "System cleanup completed successfully."
+
+bash /ntfy.sh "Server $HOSTNAME cleanup script ran" "default"
