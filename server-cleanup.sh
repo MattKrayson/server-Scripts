@@ -46,10 +46,14 @@ echo "Cleaning apt cache..."
 apt-get autoremove -y
 apt-get clean
 
-# Clean up temporary files
-echo "Cleaning temporary files..."
-rm -rf /tmp/*
-rm -rf /var/tmp/*
+if [ "$HOSTNAME" != "plex-ubuntu" ]; then
+  # Clean up temporary files
+  echo "Cleaning temporary files..."
+  rm -rf /tmp/*
+  rm -rf /var/tmp/*
+else
+  echo "Skipping cleaning of temporary files on $HOSTNAME."
+fi
 
 # Clean systemd journal logs
 echo "Cleaning systemd journal logs..."
