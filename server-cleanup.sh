@@ -1,4 +1,3 @@
-
 #!/bin/bash
 HOSTNAME=$(hostname)
 
@@ -6,6 +5,15 @@ HOSTNAME=$(hostname)
 if [[ "$EUID" -ne 0 ]]; then
   echo "Please run this script as root."
   exit 1
+fi
+
+# Check if script is running with sudo
+if [[ ! -z "$SUDO_USER" ]]; then
+    USER_HOME=$(getent passwd "$SUDO_USER" | cut -d: -f6)
+    echo "Home directory of user $SUDO_USER is: $USER_HOME"
+else
+    echo "Script is not running with sudo."
+    exit 1
 fi
 
 echo "Starting system cleanup..."
@@ -31,7 +39,7 @@ deborphan | xargs apt-get -y remove --purge
 # Remove old kernels
 echo "Removing old kernels..."
 current_kernel=$(uname -r)
-dpkg -l 'linux-*' | sed '/^ii/!d;/linux-image/!d;/'"$current_kernel"'/d;s/^[^ ]* [^ ]* \([^ ]*\).*/\1/;/[0-9]/!d' | xargs sudo apt-get -y purge
+dpkg -l 'linux-*' | sed '/^ii/!d;/linux-image/!d;/'"$current_kernel"'/d;s/^[^ ]* [^ ]* \([^ ]*\).*/\1/;/[0-9]/!d' | xargs apt-get -y purge
 
 # Clean up apt cache
 echo "Cleaning apt cache..."
@@ -60,12 +68,9 @@ history -c
 
 echo "System cleanup completed successfully."
 
-# Check if the file exists
-if [ -f "/home/$SUDO_USER/automation/ntfy.sh" ]; then
-    # If the file exists, run the ntfy.sh script
-    bash "/home/$SUDO_USER/automation/ntfy.sh" "Server $HOSTNAME cleanup script ran" "default"
+# Check if the ntfy.sh script exists and run it
+if [ -f "$USER_HOME/automation/ntfy.sh" ]; then
+    bash "$USER_HOME/automation/ntfy.sh" "Server $HOSTNAME cleanup script ran" "default"
 else
-    bash /root/automation/ntfy.sh "Server $HOSTNAME cleanup script ran" "default"
+    echo "Notification script not found at $USER_HOME/automation/ntfy.sh."
 fi
-
-
