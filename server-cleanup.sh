@@ -2,13 +2,13 @@
 HOSTNAME=$(hostname)
 
 # Ensure the script is run as root
-if [[ "$EUID" -ne 0 ]]; then
+if [ "$EUID" -ne 0 ]; then
   echo "Please run this script as root."
   exit 1
 fi
 
 # Check if script is running with sudo
-if [[ ! -z "$SUDO_USER" ]]; then
+if [ ! -z "$SUDO_USER" ]; then
     USER_HOME=$(getent passwd "$SUDO_USER" | cut -d: -f6)
     echo "Home directory of user $SUDO_USER is: $USER_HOME"
 else
@@ -64,13 +64,13 @@ find /var/log -type f -name "*.old" -exec rm -f {} \;
 # Clear bash history
 echo "Clearing bash history..."
 cat /dev/null > ~/.bash_history
-history -c
+# If running as a script with sudo, history -c might not work as expected
 
 echo "System cleanup completed successfully."
 
 # Check if the ntfy.sh script exists and run it
 if [ -f "$USER_HOME/automation/ntfy.sh" ]; then
-    bash "$USER_HOME/automation/ntfy.sh" "Server $HOSTNAME cleanup script ran" "default"
+    /bin/bash "$USER_HOME/automation/ntfy.sh" "Server $HOSTNAME cleanup script ran" "default"
 else
     echo "Notification script not found at $USER_HOME/automation/ntfy.sh."
 fi
