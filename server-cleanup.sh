@@ -60,5 +60,12 @@ history -c
 
 echo "System cleanup completed successfully."
 
-#Comment out the below or modify for your own notification service
-bash /root/automation/ntfy.sh "Server $HOSTNAME cleanup script ran" "default"
+# Check if the file exists
+if [ -f "/home/$SUDO_USER/automation/ntfy.sh" ]; then
+    # If the file exists, run the ntfy.sh script
+    bash "/home/$SUDO_USER/automation/ntfy.sh" "Server $HOSTNAME cleanup script ran" "default"
+else
+    bash /root/automation/ntfy.sh "Server $HOSTNAME cleanup script ran" "default"
+fi
+
+
