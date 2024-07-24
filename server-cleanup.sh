@@ -7,12 +7,16 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
-# Check if script is running with sudo
+# Check if script is running with sudo or as root
 if [ ! -z "$SUDO_USER" ]; then
     USER_HOME=$(getent passwd "$SUDO_USER" | cut -d: -f6)
     echo "Home directory of user $SUDO_USER is: $USER_HOME"
 else
-    echo "Script is not running with sudo."
+    USER_HOME=$(getent passwd "$USER" | cut -d: -f6)
+fi
+
+if [ "$USER_HOME" != "/root" ] && [ -z "$SUDO_USER" ]; then
+    echo "Script must be run with sudo if not executed by root."
     exit 1
 fi
 
